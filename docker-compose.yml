@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  webapp:
+    build: .
+    container_name: my-running-app
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    container_name: my-redis
+    restart: always
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+volumes:
+  portainer_data:
