@@ -1,0 +1,38 @@
+name: Auto Deploy
+
+on:
+  push:
+    branches: [main] # 监听 main 分支的变动
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: SSH Remote Commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          # 这里会自动读取你在 GitHub 网页上填的那 3 个 Secrets
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "🚀 开始自动部署..."
+
+            # 1. 进入项目目录
+            cd /home/devops_user/webapp
+
+            # 2. 强制拉取最新代码
+            git fetch --all
+            git reset --hard origin/main
+
+            # 3. 重新构建并启动 (这一步最重要)
+            docker compose up -d --build
+
+            # 4. 清理旧镜像
+            docker image prune -f
+
+            echo "✅ 部署完成！"

@@ -14,7 +14,7 @@ class SimpleHandler(BaseHTTPRequestHandler):
             # 获取当前容器的主机名 (看看是哪个副本在处理请求)
             hostname = socket.gethostname()
 
-            message = f"Hello from Docker! I have been seen {count} times.\n(Processed by Container: {hostname})"
+            message = f"🎉 Success! DevOps Pipeline is working perfectly!\n(Processed by: {hostname})"
 
             self.send_response(200)
             self.send_header('Content-type', 'text/plain; charset=utf-8')
